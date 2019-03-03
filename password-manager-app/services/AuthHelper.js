@@ -43,6 +43,11 @@ export default class AuthHelper {
         })
     }
 
+    async setAuth(token, id){
+        await SecureStore.setItemAsync('token', token)
+        await SecureStore.setItemAsync('id', id)
+    }
+
     logout(){
         AuthHelper.user = null
         SecureStore.deleteItemAsync('token')

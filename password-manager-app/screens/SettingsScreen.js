@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import LoginPage from '../components/LoginPage';
+import CreateAccountPage from '../components/CreateAccountPage';
 import AuthHelper from '../services/AuthHelper';
 import HttpHelper from '../services/HttpHelper';
 
@@ -23,6 +24,7 @@ export default class SettingsScreen extends React.Component {
     this.state = {
       token: null,
       user: null,
+      showCreateAccount: false
     } 
 
     this.auth = new AuthHelper()
@@ -60,11 +62,18 @@ export default class SettingsScreen extends React.Component {
   }
 
   render() {
+    if(this.state.showCreateAccount){
+      return(
+        <View style={{flex: 1}}>
+          <CreateAccountPage showLogin={() => this.setState({showCreateAccount: false})}/>
+        </View>
+      )
+    }
     return (
       <View style={{flex: 1}}>
         {
           this.state.token == null?
-            <LoginPage refresh={token => this.setState({token}, () => this.getUserInfo())}/>:
+            <LoginPage refresh={token => this.setState({token}, () => this.getUserInfo())} showAccountCreation={() => this.setState({showCreateAccount: true})}/>:
             this.renderProfile()
         }
       </View>

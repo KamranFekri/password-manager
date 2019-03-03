@@ -35,11 +35,12 @@ export default class HttpHelper {
 
     }
 
-    post({url, headers}){
+    post({url, headers, body}){
 
         return fetch(this.BASE_URL + url, {
             method: "POST",
             headers,
+            body: JSON.stringify(body)
         })
         .then(response => response.json())
         .catch(e => {alert(e); console.log(e)})

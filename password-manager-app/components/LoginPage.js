@@ -22,7 +22,6 @@ export default class LoginPage extends React.Component {
     }
 
     login(email, password){
-        console.log(email + ', ' + password)
         const auth = new AuthHelper()
         auth.login(email, password)
             .then(response => this.props.refresh(response.token))
@@ -55,7 +54,7 @@ export default class LoginPage extends React.Component {
                         buttonStyle={{width: 250}}
                         onPress={() => this.login(this.state.email, this.state.password)}
                     />
-                    <TouchableOpacity onPress={() => null}>
+                    <TouchableOpacity onPress={() => this.props.showAccountCreation()}>
                         <Text style={{marginTop: 20}}>Create an account</Text>
                     </TouchableOpacity>
                 </View>

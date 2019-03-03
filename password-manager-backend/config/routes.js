@@ -34,8 +34,12 @@ module.exports = (app) => {
         //check if email is already in use
         if(await users.findOne({email}) !== null){
             res.status(400)
-            res.send({message: 'Email already in use.'})
+            res.send({message: 'Email already in use.', status: 400})
             return
+        }
+
+        if(req.body.name == undefined || req.body.password == undefined || req.body.questions == undefined){
+            return res.status(400).send({ message: 'Missing parameters', status: 400})
         }
 
         const name = req.body.name
@@ -145,7 +149,10 @@ module.exports = (app) => {
         const users = await db.collection('users')
         const email = req.headers.email
         const password = req.headers.password
-        const user = await users.findOne({email})
+
+        if(email == undefined) return res.status(401).send({ auth: false, message: 'No email provided.' })
+
+        const user = await users.findOne({email: email.toLowerCase()})
 
         if(user === null || user === undefined){
             res.status(401)
