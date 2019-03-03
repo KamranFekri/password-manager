@@ -19,10 +19,14 @@ export default class AuthHelper {
             const headers = {email, password}
             http.put({url, headers})
                 .then(async response => {
-                    await SecureStore.setItemAsync('token', response.token)
-                    await SecureStore.setItemAsync('id', response.id)
-                    AuthHelper.user = response
-                    resolve(response)
+                    if(response.status == 401) {
+                        reject(response.message)
+                    } else {
+                        await SecureStore.setItemAsync('token', response.token)
+                        await SecureStore.setItemAsync('id', response.id)
+                        AuthHelper.user = response
+                        resolve(response)
+                    }
                 })
                 .catch(e => reject(e))
         })
@@ -39,10 +43,10 @@ export default class AuthHelper {
         })
     }
 
-    clearAuth(){
+    logout(){
         AuthHelper.user = null
         SecureStore.deleteItemAsync('token')
-        SecureStore.deleteItemAsync('id')
+        return SecureStore.deleteItemAsync('id')
     }
 
 }

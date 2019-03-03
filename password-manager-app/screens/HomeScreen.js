@@ -9,6 +9,7 @@ import {
   View,
   Clipboard,
 } from 'react-native';
+import LoginPage from '../components/LoginPage';
 import { ListItem , Button, Icon, Input } from 'react-native-elements';
 import AuthHelper from '../services/AuthHelper';
 import HttpHelper from '../services/HttpHelper';
@@ -28,29 +29,33 @@ export default class HomeScreen extends React.Component {
     this.state = {
       accounts: [],
       addAccountString: '',
-      addPasswordString: ''
+      addPasswordString: '',
+      token: null
     }
+
+    this.props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        this.setState({token: await this.auth.getToken()}, () => {
+          this.getAccounts()
+        })
+      }
+    );
+
   }
 
-  componentDidMount(){
-    this.getAccounts()
-  }
-
-  async getAccounts(){
-    
+  getAccounts(){
     const url = '/accounts'
-    const token = await this.auth.getToken()
   
-    this.http.get({url, headers: {'x-access-token': token}})
-      .then(response => this.setState({accounts: response.accounts}))
+    this.http.get({url, headers: {'x-access-token': this.state.token}})
+      .then(response => this.setState({accounts: response.accounts || []}))
   }
 
-  async getPasswordForAccount(account){
+  getPasswordForAccount(account){
         
     const url = '/account/' + account
-    const token = await this.auth.getToken()
-  
-    this.http.get({url, headers: {'x-access-token': token}})
+    
+    this.http.get({url, headers: {'x-access-token': this.state.token}})
       .then(response => {
         this.accountInfo = response
         this.sheet.open()
@@ -73,11 +78,10 @@ export default class HomeScreen extends React.Component {
       'Delete',
       'Are you sure that you want to delete ' + this.accountInfo.account + '?',
       [
-        {text: 'Yes', onPress: async () => {
+        {text: 'Yes', onPress: () => {
           const url = '/account/' + this.accountInfo.account + '/delete'
-          const token = await this.auth.getToken()
         
-          this.http.delete({url, headers: {'x-access-token': token}})
+          this.http.delete({url, headers: {'x-access-token': this.state.token}})
             .then(response => {
               this.sheet.close()
               this.getAccounts()
@@ -89,16 +93,15 @@ export default class HomeScreen extends React.Component {
     )
   }
 
-  async addAccount(account, password){
+  addAccount(account, password){
     if(account == '' || password == ''){
       alert('Missing fields')
       return
     }
 
     const url = '/account'
-    const token = await this.auth.getToken()
   
-    this.http.post({url, headers: {'x-access-token': token, account, password}})
+    this.http.post({url, headers: {'x-access-token': this.state.token, account, password}})
       .then(response => {
         this.addSheet.close()
         this.getAccounts()
@@ -106,6 +109,14 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
+
+    if(this.state.token == null){
+      return(
+        <View style={styles.container}>
+          <LoginPage refresh={token => this.setState({token}, () => this.getAccounts())}/>
+        </View>
+      )
+    }
     
     return (
       <View style={styles.container}>

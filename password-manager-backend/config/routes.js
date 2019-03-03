@@ -149,7 +149,7 @@ module.exports = (app) => {
 
         if(user === null || user === undefined){
             res.status(401)
-            res.send({message: 'Email or password did not match.'})
+            res.send({message: 'Email or password did not match.', status: 401})
             return
         }
 
@@ -161,7 +161,7 @@ module.exports = (app) => {
             res.send({id: user._id, token})
         } else {
             res.status(401)
-            res.send({message: 'Email or password did not match.'})
+            res.send({message: 'Email or password did not match.', status: 401})
         }
     })
 
@@ -240,13 +240,14 @@ module.exports = (app) => {
             const account = req.headers.account
             const password = req.headers.password
 
+            if(account == undefined) return res.status(400).send({ message: 'Missing account.' })
 
             //get user
             const id = new ObjectId(decoded.id)
             const user = await users.findOne(id)
 
             //updating user
-            user.accounts[account] = aes256.encrypt(decoded.key, password)
+            user.accounts[account.toLowerCase()] = aes256.encrypt(decoded.key, password)
 
             //update user
             users.update(
