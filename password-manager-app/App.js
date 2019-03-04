@@ -2,18 +2,11 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
-import AuthHelper from './services/AuthHelper';
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
-
-  constructor(props){
-    super(props)
-    this.auth = new AuthHelper()
-    this.auth.login('email@email.com', 'password')
-  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {

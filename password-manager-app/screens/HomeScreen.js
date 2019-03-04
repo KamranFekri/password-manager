@@ -124,6 +124,10 @@ export default class HomeScreen extends React.Component {
           <Text style={{fontSize: 32, fontWeight: 'bold', color: 'white'}}>Password Manager</Text>
           <Text style={{fontSize: 12, fontStyle: 'italic', color: 'white'}}>Made with Express.js, MongoDB and React Native</Text>
         </View>
+        {
+          this.state.accounts !== null && this.state.accounts.length == 0?
+          <Text style={{textAlign: 'center', marginTop: 10}}>No Accounts Saved</Text>: null
+        }
         <View style={{flex: 3}}>
           {
             this.state.accounts.map((l, i) => (

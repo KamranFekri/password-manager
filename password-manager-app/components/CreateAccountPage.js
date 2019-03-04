@@ -18,10 +18,10 @@ export default class CreateAccountPage extends React.Component {
     };
 
     state = {
-        email: 'test@test.ca',
-        password: 'test',
-        confirmPassword: 'test',
-        name: 'Name Test',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        name: '',
 
     }
 
@@ -51,6 +51,7 @@ export default class CreateAccountPage extends React.Component {
                     alert('Your account has been created')
                     let auth = new AuthHelper()
                     auth.setAuth(response.token, response.id)
+                    this.props.onComplete(response.token)
                 } else {
                     alert(response.message)
                 }
@@ -93,7 +94,7 @@ export default class CreateAccountPage extends React.Component {
                         onChangeText={(confirmPassword) => this.setState({confirmPassword})}
                     />
                     <Button 
-                        title="Create your Account"
+                        title="Create Your Account"
                         buttonStyle={{width: 250}}
                         onPress={() => this.createAccount(this.state.name, this.state.email, this.state.password, this.state.confirmPassword)}
                     />

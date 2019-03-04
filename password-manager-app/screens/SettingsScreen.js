@@ -65,7 +65,9 @@ export default class SettingsScreen extends React.Component {
     if(this.state.showCreateAccount){
       return(
         <View style={{flex: 1}}>
-          <CreateAccountPage showLogin={() => this.setState({showCreateAccount: false})}/>
+          <CreateAccountPage showLogin={() => this.setState({showCreateAccount: false})} onComplete={(token) => {
+            this.setState({showCreateAccount: false, token}, () => this.getUserInfo())
+          }}/>
         </View>
       )
     }
