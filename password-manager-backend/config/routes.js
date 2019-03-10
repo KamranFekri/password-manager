@@ -67,7 +67,7 @@ module.exports = (app) => {
         users.insertOne(user)
             .then(result => {
                 //jwt token
-                const token = jwt.sign({ id: result.insertedId, key }, 'top-secrete', {expiresIn: 86400});
+                const token = jwt.sign({ id: result.insertedId, key }, process.env.JWT_TOKEN_KEY, {expiresIn: 86400});
                 res.send({
                     status: 200,
                     message: "New account created succesfully.",
@@ -90,7 +90,7 @@ module.exports = (app) => {
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
         
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
 
             const users = await db.collection('users')
@@ -120,7 +120,7 @@ module.exports = (app) => {
         const token = req.headers['x-access-token']
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
             
             //get user
@@ -137,7 +137,7 @@ module.exports = (app) => {
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
         
 
-        jwt.verify(token, 'top-secrete', function(err, decoded) {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, function(err, decoded) {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
             res.send({decoded})
         })
@@ -164,7 +164,7 @@ module.exports = (app) => {
 
         if(passwordIsValid == 'true'){
             const key = aes256.decrypt(password, user.hashFromPassword)
-            const token = jwt.sign({ id: user._id, key }, 'top-secrete', {expiresIn: 86400});
+            const token = jwt.sign({ id: user._id, key }, process.env.JWT_TOKEN_KEY, {expiresIn: 86400});
             res.send({id: user._id, token})
         } else {
             res.status(401)
@@ -182,7 +182,7 @@ module.exports = (app) => {
         const token = req.headers['x-access-token']
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
           
             if(!ObjectId.isValid(req.params.id)){
@@ -210,7 +210,7 @@ module.exports = (app) => {
         const token = req.headers['x-access-token']
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
             
             //get user
@@ -240,7 +240,7 @@ module.exports = (app) => {
         const token = req.headers['x-access-token']
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
             
             //add account
@@ -274,7 +274,7 @@ module.exports = (app) => {
         const token = req.headers['x-access-token']
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
             
             //get user
@@ -291,7 +291,7 @@ module.exports = (app) => {
         const token = req.headers['x-access-token']
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
             
             const account = req.params.account
@@ -319,7 +319,7 @@ module.exports = (app) => {
         const token = req.headers['x-access-token']
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' })
 
-        jwt.verify(token, 'top-secrete', async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_TOKEN_KEY, async (err, decoded) => {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
             
             const account = req.params.account
